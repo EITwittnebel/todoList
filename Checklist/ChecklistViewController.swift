@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Foundation
 
 class ChecklistViewController: UITableViewController {
 
@@ -75,15 +76,17 @@ class ChecklistViewController: UITableViewController {
       label.text = item.descrip
     }
     if let label = cell.viewWithTag(998) as? UILabel {
-      label.text = item.dueDate
+      let dateFormatter = DateFormatter()
+      dateFormatter.dateFormat = "hh:mm, MM/dd"
+      label.text = dateFormatter.string(from: item.dueDate)
     }
   }
   
   func configureCheckmark(for cell: UITableViewCell, with item: ChecklistItem) {
     if item.checked {
-      cell.accessoryType = .checkmark
+      cell.accessoryType = .disclosureIndicator
     } else {
-      cell.accessoryType = .none
+      cell.accessoryType = .disclosureIndicator
     }
     item.toggleChecked()
   }
@@ -109,6 +112,10 @@ class ChecklistViewController: UITableViewController {
 }
 
 extension ChecklistViewController: AddItemViewControllerDelegate {
+  func addItemViewControllerComplete(_ controller: AddItemTableViewController, didFinishCompleting item: ChecklistItem) {
+    navigationController?.popViewController(animated: true)
+  }
+  
   
   func addItemViewControllerDidCancel(_ controller: AddItemTableViewController) {
     navigationController?.popViewController(animated: true)
@@ -125,4 +132,5 @@ extension ChecklistViewController: AddItemViewControllerDelegate {
     tableView.insertRows(at: indexPaths, with: .automatic)
 
   }
+  
 }

@@ -12,7 +12,7 @@ class TodoList {
   
   var todos: [ChecklistItem] = []
   
-  init() {
+  public init() {
     
     let row0Item = ChecklistItem()
     let row1Item = ChecklistItem()
@@ -49,4 +49,54 @@ class TodoList {
     return titles[randomNumber]
   }
   
+}
+
+extension Collection where Iterator.Element == TodoList
+{
+    // Builds the persistence URL. This is a location inside
+    // the "Application Support" directory for the App.
+    private static func persistencePath() -> URL?
+    {
+        let url = try? FileManager.default.url(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask,
+            appropriateFor: nil,
+            create: true)
+
+        return url?.appendingPathComponent("todoitems.bin")
+    }
+
+    // Write the array to persistence
+    func writeToPersistence() throws
+    {
+        if let url = Self.persistencePath(), let array = self as? NSArray
+        {
+            let data = NSKeyedArchiver.archivedData(withRootObject: array)
+            try data.write(to: url)
+        }
+        else
+        {
+            throw NSError(domain: "com.example.MyToDo", code: 10, userInfo: nil)
+        }
+    }
+
+    // Read the array from persistence
+    static func readFromPersistence() throws -> [TodoList]
+    {
+        if let url = persistencePath(), let data = (try Data(contentsOf: url) as Data?)
+        {
+            if let array = NSKeyedUnarchiver.unarchiveObject(with: data) as? [TodoList]
+            {
+                return array
+            }
+            else
+            {
+                throw NSError(domain: "com.example.MyToDo", code: 11, userInfo: nil)
+            }
+        }
+        else
+        {
+            throw NSError(domain: "com.example.MyToDo", code: 12, userInfo: nil)
+        }
+    }
 }
