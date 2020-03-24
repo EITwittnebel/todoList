@@ -8,10 +8,43 @@
 
 import UIKit
 import Foundation
+import RealmSwift
 
 class ChecklistViewController: UITableViewController {
-
+  
   var todoList: TodoList
+  
+  let realm = try! Realm()
+  lazy var categories: Results<ChecklistItem> = { self.realm.objects(ChecklistItem.self).filter("checked == false") }()
+  
+  private func populateDefaultCategories() {
+    if categories.count == 0 { // 1
+      print("categories populated")
+      try! realm.write() { // 2
+        let defaultCategories =
+          ["Birds", "Mammals", "Flora", "Reptiles", "Arachnids" ] // 3
+        
+        for category in defaultCategories { // 4
+          let newCategory = ChecklistItem()
+          newCategory.text = category
+          newCategory.checked = false
+          
+          realm.add(newCategory)
+        }
+      }
+      
+      categories = realm.objects(ChecklistItem.self) // 5
+    } else {
+      print("nani")
+    }/*else {
+      try! realm.write() {
+        print("categories purged")
+        for item in categories {
+          realm.delete(item)
+        }
+      }
+    }*/
+  }
   
   @IBAction func addItem(_ sender: Any) {
     
@@ -31,22 +64,33 @@ class ChecklistViewController: UITableViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+/* REALLY DOESNT LIKE THIS
+    for item in realm.objects(ChecklistItem.self) {
+      if (item.checked == false) {
+        todoList.todos.append(item)
+      }
+    }
+  */
     navigationController?.navigationBar.prefersLargeTitles = true
     
   }
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return todoList.todos.count
+    
+    return categories.count
+    //return todoList.todos.count
   }
   
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "ChecklistItem", for: indexPath)
-    let item = todoList.todos[indexPath.row]
+    try! realm.write() {
+      let item = categories[indexPath.row]
+    
+    //let item = todoList.todos[indexPath.row]
     configureText(for: cell, with: item)
     configureCheckmark(for: cell, with: item)
-    
+    }
     return cell
   }
  
@@ -60,9 +104,12 @@ class ChecklistViewController: UITableViewController {
   }
   
   override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-    
     todoList.todos.remove(at: indexPath.row)
     let indexPaths = [indexPath]
+    try! realm.write() {
+      //categories[indexPath.row].checked = true
+      realm.delete(categories[indexPath.row])
+    }
     tableView.deleteRows(at: indexPaths, with: .automatic)
   }
     
@@ -124,8 +171,8 @@ extension ChecklistViewController: AddItemViewControllerDelegate {
   func addItemViewController(_ controller: AddItemTableViewController, didFinishAdding item: ChecklistItem) {
     navigationController?.popViewController(animated: true)
     
-    let newRowIndex = todoList.todos.count
-    todoList.todos.append(item)
+    let newRowIndex = categories.count - 1
+    //todoList.todos.append(item)
        
     let indexPath = IndexPath(row: newRowIndex, section: 0)
     let indexPaths = [indexPath]

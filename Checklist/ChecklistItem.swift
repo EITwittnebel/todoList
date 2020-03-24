@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import RealmSwift
 
-class ChecklistItem {
+class ChecklistItem: Object {
   /*
   required init?(coder aDecoder: NSCoder) {
     if let text = aDecoder.decodeObject(forKey: "text") as? String {
@@ -47,13 +48,13 @@ class ChecklistItem {
   }
   */
   
-  var text = ""
-  var descrip = ""
-  var dueDate: Date
-  var checked = false
+  @objc dynamic var text = ""
+  @objc dynamic var descrip = ""
+  @objc dynamic var dueDate: Date
+  @objc dynamic var checked = false
   
   
-  init() {
+  required init() {
     dueDate = Date()
   }
  

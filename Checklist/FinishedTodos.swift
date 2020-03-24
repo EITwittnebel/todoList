@@ -7,10 +7,14 @@
 //
 
 import UIKit
+import RealmSwift
 
 class FinishedTodos: UITableViewController {
   
   var completedTodos: TodoList
+  
+  let realm = try! Realm()
+  lazy var categories2: Results<ChecklistItem> = { self.realm.objects(ChecklistItem.self) }()
   
   required init?(coder aDecoder: NSCoder) {
     completedTodos = TodoList()
@@ -18,6 +22,7 @@ class FinishedTodos: UITableViewController {
   }
   
   override func viewDidLoad() {
+    //print(categories2.count)
     super.viewDidLoad()
   }
   
@@ -28,7 +33,6 @@ class FinishedTodos: UITableViewController {
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
      let cell = tableView.dequeueReusableCell(withIdentifier: "ChecklistItem", for: indexPath)
      let item = completedTodos.todos[indexPath.row]
-     
      return cell
    }
   

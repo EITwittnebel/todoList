@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 protocol AddItemViewControllerDelegate: class {
   
@@ -23,6 +24,9 @@ class AddItemTableViewController: UITableViewController {
   weak var delegate: AddItemViewControllerDelegate?
  // weak var todoList: TodoList?
  // weak var itemToEdit: ChecklistItem?
+  
+  let realm = try! Realm()
+  lazy var categories: Results<ChecklistItem> = { self.realm.objects(ChecklistItem.self) }()
   
   @IBOutlet weak var addBarButton: UIBarButtonItem!
   @IBOutlet weak var todoName: UITextField!
@@ -60,6 +64,9 @@ class AddItemTableViewController: UITableViewController {
     }
     item.dueDate = dueDate.date
     item.checked = false
+    try! realm.write () {
+      realm.add(item)
+    }
     delegate?.addItemViewController(self, didFinishAdding: item)
   }
   
