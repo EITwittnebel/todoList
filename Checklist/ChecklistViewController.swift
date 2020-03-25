@@ -45,21 +45,20 @@ class ChecklistViewController: UITableViewController {
     }*/
   }
   
-  @IBAction func completeButton(_ sender: Any) {
+  @IBAction func completeButton(_ sender: UIButton) {
     //navigationController?.popViewController(animated: true)
-    print("TESTING")
     let item = FinishedItem()
-    if let cell = sender as? UITableViewCell,
-      let indexPath = tableView.indexPath(for: cell) {
-        print("TESTING2")
-        item.text = categories[indexPath.row].text
-        item.descrip = categories[indexPath.row].descrip
-        try! realm.write() {
-          realm.add(item)
-          tableView.deleteRows(at: [indexPath], with: .automatic)
-          realm.delete(categories[indexPath.row])
-        }
+    guard let cell = sender.superview?.superview as? UITableViewCell,
+      let indexPath = tableView.indexPath(for: cell) else {
+        return
+      }
+    item.text = categories[indexPath.row].text
+    item.descrip = categories[indexPath.row].descrip
+    try! realm.write() {
+      realm.add(item)
+      realm.delete(categories[indexPath.row])
     }
+    tableView.deleteRows(at: [indexPath], with: .automatic)
   }
   
   @IBAction func addItem(_ sender: Any) {
