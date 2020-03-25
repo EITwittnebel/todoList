@@ -45,6 +45,23 @@ class ChecklistViewController: UITableViewController {
     }*/
   }
   
+  @IBAction func completeButton(_ sender: Any) {
+    //navigationController?.popViewController(animated: true)
+    print("TESTING")
+    let item = FinishedItem()
+    if let cell = sender as? UITableViewCell,
+      let indexPath = tableView.indexPath(for: cell) {
+        print("TESTING2")
+        item.text = categories[indexPath.row].text
+        item.descrip = categories[indexPath.row].descrip
+        try! realm.write() {
+          realm.add(item)
+          tableView.deleteRows(at: [indexPath], with: .automatic)
+          realm.delete(categories[indexPath.row])
+        }
+    }
+  }
+  
   @IBAction func addItem(_ sender: Any) {
     
     let newRowIndex = todoList.todos.count
@@ -161,11 +178,15 @@ class ChecklistViewController: UITableViewController {
 }
 
 extension ChecklistViewController: AddItemViewControllerDelegate {
-  func editItemViewController(_ controller: AddItemTableViewController, didFinishEditting item: ChecklistItem) {
+  func addItemViewControllerComplete(_ controller: AddItemTableViewController, item: FinishedItem) {
     navigationController?.popViewController(animated: true)
     tableView.reloadData()
   }
   
+  func editItemViewController(_ controller: AddItemTableViewController, didFinishEditting item: ChecklistItem) {
+    navigationController?.popViewController(animated: true)
+    tableView.reloadData()
+  }
   
   func addItemViewControllerDidCancel(_ controller: AddItemTableViewController) {
     navigationController?.popViewController(animated: true)

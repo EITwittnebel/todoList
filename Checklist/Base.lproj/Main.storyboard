@@ -28,7 +28,8 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <state key="normal" image="checkmark.circle" catalog="system"/>
                                             <connections>
-                                                <action selector="completeButton:" destination="eJs-U1-xXg" eventType="touchUpInside" id="ei3-Ha-bl7"/>
+                                                <action selector="completeButton:" destination="eJs-U1-xXg" eventType="touchUpInside" id="S6t-M2-TXD"/>
+                                                <action selector="completeButton:" destination="ewa-4u-uF2" eventType="touchUpInside" id="c1X-09-Pxp"/>
                                             </connections>
                                         </button>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="1000" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="4eG-Zo-YsH">

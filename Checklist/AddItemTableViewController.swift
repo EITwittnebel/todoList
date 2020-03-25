@@ -16,6 +16,8 @@ protocol AddItemViewControllerDelegate: class {
   
   func editItemViewController(_ controller: AddItemTableViewController, didFinishEditting item: ChecklistItem)
   
+  func addItemViewControllerComplete(_ controller: AddItemTableViewController, item: FinishedItem)
+  
 }
 
 class AddItemTableViewController: UITableViewController {
@@ -33,21 +35,7 @@ class AddItemTableViewController: UITableViewController {
   @IBOutlet weak var todoDescription: UITextField!
   @IBOutlet weak var cancelBarButton: UIBarButtonItem!
   @IBOutlet weak var dueDate: UIDatePicker!
-  
-  //TODO: rework
-  @IBAction func completeButton(_ sender: Any) {
-    //navigationController?.popViewController(animated: true)
-    let item = ChecklistItem()
-    if let nameFieldText = todoName.text {
-      item.text = nameFieldText
-    }
-    if let descripFieldText = todoDescription.text {
-      item.descrip = descripFieldText
-    }
-    item.dueDate = dueDate.date
-    item.checked = true
-    //delegate?.addItemViewControllerComplete(self, didFinishCompleting: item)
-  }
+
   
   @IBAction func cancel(_ sender: Any) {
     navigationController?.popViewController(animated: true)
