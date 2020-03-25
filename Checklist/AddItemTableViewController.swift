@@ -35,7 +35,7 @@ class AddItemTableViewController: UITableViewController {
   @IBOutlet weak var todoDescription: UITextField!
   @IBOutlet weak var cancelBarButton: UIBarButtonItem!
   @IBOutlet weak var dueDate: UIDatePicker!
-
+  @IBOutlet weak var urgentSwitch: UISwitch!
   
   @IBAction func cancel(_ sender: Any) {
     navigationController?.popViewController(animated: true)
@@ -44,6 +44,7 @@ class AddItemTableViewController: UITableViewController {
   
   @IBAction func done(_ sender: Any) {
     navigationController?.popViewController(animated: true)
+    let urgent: Bool = urgentSwitch.isOn
     let item: ChecklistItem = itemToEdit ?? ChecklistItem()
     try! realm.write () {
       if let nameFieldText = todoName.text {
@@ -54,6 +55,7 @@ class AddItemTableViewController: UITableViewController {
       }
       item.dueDate = dueDate.date
       item.checked = false
+      item.urgent = urgent
 
       if (itemToEdit == nil) {
         realm.add(item)

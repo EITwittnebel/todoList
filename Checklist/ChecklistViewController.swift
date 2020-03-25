@@ -16,6 +16,8 @@ class ChecklistViewController: UITableViewController {
   let realm = try! Realm()
   lazy var categories: Results<ChecklistItem> = { self.realm.objects(ChecklistItem.self) }()
   
+  @IBOutlet weak var urgentPic: UIImageView!
+  
   private func populateDefaultCategories() {
     if categories.count == 0 { // 1
       print("categories populated")
@@ -44,6 +46,8 @@ class ChecklistViewController: UITableViewController {
       }
     }*/
   }
+  
+
   
   @IBAction func completeButton(_ sender: UIButton) {
     //navigationController?.popViewController(animated: true)
@@ -104,7 +108,14 @@ class ChecklistViewController: UITableViewController {
     
       //let item = todoList.todos[indexPath.row]
       configureText(for: cell, with: item)
+      //urgentButton.isHidden = true
       configureCheckmark(for: cell, with: item)
+    }
+    if categories[indexPath.row].urgent {
+      //let imageView = UIImageView()
+      //imageView.frame = CGRect(x: cell.center.x-25, y: cell.center.y-30, width: 15, height: 15)
+      //imageView.backgroundColor = .cyan
+      //cell.addSubview(imageView)
     }
     return cell
   }
@@ -127,6 +138,10 @@ class ChecklistViewController: UITableViewController {
       //categories[indexPath.row].checked = true
       realm.delete(categories[indexPath.row])
     }
+    let subviews = tableView.cellForRow(at: indexPath)?.subviews
+    //for view in subviews! {
+    //  view.removeFromSuperview()
+    //}
     tableView.deleteRows(at: indexPaths, with: .automatic)
   }
     
@@ -143,14 +158,18 @@ class ChecklistViewController: UITableViewController {
       let dateFormatter = DateFormatter()
       dateFormatter.dateFormat = "hh:mm, MM/dd"
       label.text = dateFormatter.string(from: item.dueDate)
+      if (item.dueDate < Date()) {
+        label.textColor = .red
+      }
     }
   }
   
   func configureCheckmark(for cell: UITableViewCell, with item: ChecklistItem) {
-    if item.checked {
-      cell.accessoryType = .disclosureIndicator
+    guard let urgentMark = cell.viewWithTag(9001) as? UILabel else { return }
+    if item.urgent {
+      urgentMark.text = "⚠️"
     } else {
-      cell.accessoryType = .disclosureIndicator
+      urgentMark.text = ""
     }
     item.toggleChecked()
   }
@@ -160,6 +179,11 @@ class ChecklistViewController: UITableViewController {
     if let sb: UITableViewController = storyboard?.instantiateViewController(withIdentifier: "Completed") as? UITableViewController {
       sb.tableView.reloadData()
     }
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    tableView.reloadData()
+    super.viewWillAppear(animated)
   }
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
