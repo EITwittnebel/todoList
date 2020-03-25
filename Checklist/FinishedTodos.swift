@@ -10,6 +10,8 @@ import RealmSwift
 
 class FinishedTodos: UITableViewController {
   
+  var reload: Int = 0
+  
   let realm = try! Realm()
   lazy var categories2: Results<FinishedItem> = { self.realm.objects(FinishedItem.self) }()
   
@@ -18,8 +20,13 @@ class FinishedTodos: UITableViewController {
   }
   
   override func viewDidLoad() {
-    //print(categories2.count)
+    //reload = true
     super.viewDidLoad()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    tableView.reloadData()
+    super.viewWillAppear(animated)
   }
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -27,13 +34,26 @@ class FinishedTodos: UITableViewController {
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-     let cell = tableView.dequeueReusableCell(withIdentifier: "FinishedItem", for: indexPath)
-     try! realm.write() {
-       let item = categories2[indexPath.row]
-       configureText(for: cell, with: item)
-     }
-     return cell
-   }
+    if (reload != categories2.count) {
+      tableView.reloadData()
+      reload = categories2.count
+    }
+    let cell = tableView.dequeueReusableCell(withIdentifier: "FinishedItem", for: indexPath)
+    try! realm.write() {
+      let item = categories2[indexPath.row]
+      configureText(for: cell, with: item)
+    }
+    return cell
+  }
+  
+  override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    let indexPaths = [indexPath]
+    try! realm.write() {
+      realm.delete(categories2[indexPath.row])
+    }
+    tableView.deleteRows(at: indexPaths, with: .automatic)
+    tableView.reloadData()
+  }
   
   func configureText(for cell: UITableViewCell, with item: FinishedItem) {
     if let label = cell.viewWithTag(1500) as? UILabel {

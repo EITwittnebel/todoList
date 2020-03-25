@@ -155,6 +155,13 @@ class ChecklistViewController: UITableViewController {
     item.toggleChecked()
   }
   
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    if let sb: UITableViewController = storyboard?.instantiateViewController(withIdentifier: "Completed") as? UITableViewController {
+      sb.tableView.reloadData()
+    }
+  }
+  
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if segue.identifier == "addItemSegue" {
       if let addItemViewController = segue.destination as? AddItemTableViewController {
@@ -168,7 +175,7 @@ class ChecklistViewController: UITableViewController {
           let indexPath = tableView.indexPath(for: cell) {
             let item: ChecklistItem = categories[indexPath.row]
             addItemViewController.itemToEdit = item
-          addItemViewController.test = 5
+            addItemViewController.test = 5
             addItemViewController.delegate = self
         }
       }
