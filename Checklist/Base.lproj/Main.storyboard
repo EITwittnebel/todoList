@@ -65,6 +65,9 @@
                                         <constraint firstItem="Vbu-PF-cxh" firstAttribute="baseline" secondItem="4eG-Zo-YsH" secondAttribute="baseline" id="zzI-II-X38"/>
                                     </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="fe3-Jy-YbM" kind="show" identifier="editItemSegue" id="6Gk-WH-YYg"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -84,7 +87,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vcu-wd-dG8" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="eJs-U1-xXg" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1848.8" y="49.925037481259373"/>
+            <point key="canvasLocation" x="1847" y="38"/>
         </scene>
         <!--Title-->
         <scene sceneID="7os-Ng-ZUu">
@@ -180,7 +183,7 @@
                                 <action selector="cancel:" destination="fe3-Jy-YbM" id="cUZ-H4-Y76"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Add" id="YT2-Ea-JsS">
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Done" id="YT2-Ea-JsS">
                             <connections>
                                 <action selector="done:" destination="fe3-Jy-YbM" id="8Co-F6-qrY"/>
                             </connections>
@@ -202,8 +205,9 @@
         <scene sceneID="ezB-dA-TnI">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yZp-KL-H0m" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="cf1-i9-Gkt"/>
+                    <tabBarItem key="tabBarItem" title="Item" image="xmark.rectangle" catalog="system" id="rnE-yp-D9C"/>
                     <toolbarItems/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="czR-5W-mDf">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -282,7 +286,7 @@
                             <outlet property="delegate" destination="ukq-3W-hnU" id="IMQ-vl-D6C"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="Item" id="drP-Pj-kqF"/>
+                    <tabBarItem key="tabBarItem" title="Item" image="checkmark.rectangle.fill" catalog="system" id="drP-Pj-kqF"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wDa-Oc-SBe" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -310,5 +314,10 @@
     </scenes>
     <resources>
         <image name="checkmark.circle" catalog="system" width="64" height="60"/>
+        <image name="checkmark.rectangle.fill" catalog="system" width="64" height="46"/>
+        <image name="xmark.rectangle" catalog="system" width="64" height="46"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="6Gk-WH-YYg"/>
+    </inferredMetricsTieBreakers>
 </document>

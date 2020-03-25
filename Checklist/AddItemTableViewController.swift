@@ -14,7 +14,7 @@ protocol AddItemViewControllerDelegate: class {
   
   func addItemViewController(_ controller: AddItemTableViewController, didFinishAdding item: ChecklistItem)
   
-  func addItemViewControllerComplete(_ controller: AddItemTableViewController, didFinishCompleting item: ChecklistItem)
+  func editItemViewController(_ controller: AddItemTableViewController, didFinishEditting item: ChecklistItem)
   
 }
 
@@ -22,7 +22,8 @@ class AddItemTableViewController: UITableViewController {
 
   weak var delegate: AddItemViewControllerDelegate?
  // weak var todoList: TodoList?
- // weak var itemToEdit: ChecklistItem?
+  var itemToEdit: ChecklistItem?
+  var test: Int?
   
   let realm = try! Realm()
   lazy var categories: Results<ChecklistItem> = { self.realm.objects(ChecklistItem.self) }()
@@ -33,6 +34,7 @@ class AddItemTableViewController: UITableViewController {
   @IBOutlet weak var cancelBarButton: UIBarButtonItem!
   @IBOutlet weak var dueDate: UIDatePicker!
   
+  //TODO: rework
   @IBAction func completeButton(_ sender: Any) {
     //navigationController?.popViewController(animated: true)
     let item = ChecklistItem()
@@ -44,7 +46,7 @@ class AddItemTableViewController: UITableViewController {
     }
     item.dueDate = dueDate.date
     item.checked = true
-    delegate?.addItemViewControllerComplete(self, didFinishCompleting: item)
+    //delegate?.addItemViewControllerComplete(self, didFinishCompleting: item)
   }
   
   @IBAction func cancel(_ sender: Any) {
@@ -54,23 +56,39 @@ class AddItemTableViewController: UITableViewController {
   
   @IBAction func done(_ sender: Any) {
     navigationController?.popViewController(animated: true)
-    let item = ChecklistItem()
-    if let nameFieldText = todoName.text {
-      item.text = nameFieldText
-    }
-    if let descripFieldText = todoDescription.text {
-      item.descrip = descripFieldText
-    }
-    item.dueDate = dueDate.date
-    item.checked = false
+    let item: ChecklistItem = itemToEdit ?? ChecklistItem()
     try! realm.write () {
-      realm.add(item)
+      if let nameFieldText = todoName.text {
+        item.text = nameFieldText
+      }
+      if let descripFieldText = todoDescription.text {
+        item.descrip = descripFieldText
+      }
+      item.dueDate = dueDate.date
+      item.checked = false
+
+      if (itemToEdit == nil) {
+        realm.add(item)
+      }
     }
-    delegate?.addItemViewController(self, didFinishAdding: item)
+    if (itemToEdit == nil) {
+      delegate?.addItemViewController(self, didFinishAdding: item)
+    } else {
+      delegate?.editItemViewController(self, didFinishEditting: item)
+    }
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    print(test ?? 0)
+    if (itemToEdit != nil) {
+      todoName.text = itemToEdit!.text
+      todoDescription.text = itemToEdit!.descrip
+      addBarButton.isEnabled = true
+      title = "Edit Item"
+    } else {
+      title = "Add Item"
+    }
     navigationItem.largeTitleDisplayMode = .never
   }
   

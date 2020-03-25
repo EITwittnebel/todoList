@@ -14,7 +14,7 @@ class ChecklistViewController: UITableViewController {
   var todoList: TodoList
   
   let realm = try! Realm()
-  lazy var categories: Results<ChecklistItem> = { self.realm.objects(ChecklistItem.self).filter("checked == false") }()
+  lazy var categories: Results<ChecklistItem> = { self.realm.objects(ChecklistItem.self) }()
   
   private func populateDefaultCategories() {
     if categories.count == 0 { // 1
@@ -86,24 +86,26 @@ class ChecklistViewController: UITableViewController {
     try! realm.write() {
       let item = categories[indexPath.row]
     
-    //let item = todoList.todos[indexPath.row]
-    configureText(for: cell, with: item)
-    configureCheckmark(for: cell, with: item)
+      //let item = todoList.todos[indexPath.row]
+      configureText(for: cell, with: item)
+      configureCheckmark(for: cell, with: item)
     }
     return cell
   }
  
 
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    if let cell = tableView.cellForRow(at: indexPath) {
-      let item = todoList.todos[indexPath.row]
-      configureCheckmark(for: cell, with: item)
+    //if let cell = tableView.cellForRow(at: indexPath) {
+      //try! realm.write() {
+      //  let item = categories[indexPath.row]
+      //}
+      //configureCheckmark(for: cell, with: item)
       tableView.deselectRow(at: indexPath, animated: true)
-    }
+    
   }
   
   override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-    todoList.todos.remove(at: indexPath.row)
+    //todoList.todos.remove(at: indexPath.row)
     let indexPaths = [indexPath]
     try! realm.write() {
       //categories[indexPath.row].checked = true
@@ -144,22 +146,24 @@ class ChecklistViewController: UITableViewController {
         //addItemViewController.todoList = todoList
       }
     }
-    /*
     if segue.identifier == "editItemSegue" {
       if let addItemViewController = segue.destination as? AddItemTableViewController {
         if let cell = sender as? UITableViewCell,
           let indexPath = tableView.indexPath(for: cell) {
-          let item = todoList.todos[indexPath.row]
-          addItemViewController.itemToEdit = item
+            let item: ChecklistItem = categories[indexPath.row]
+            addItemViewController.itemToEdit = item
+          addItemViewController.test = 5
+            addItemViewController.delegate = self
         }
-      }*
-    }*/
+      }
+    }
   }
 }
 
 extension ChecklistViewController: AddItemViewControllerDelegate {
-  func addItemViewControllerComplete(_ controller: AddItemTableViewController, didFinishCompleting item: ChecklistItem) {
+  func editItemViewController(_ controller: AddItemTableViewController, didFinishEditting item: ChecklistItem) {
     navigationController?.popViewController(animated: true)
+    tableView.reloadData()
   }
   
   
