@@ -10,9 +10,7 @@ import Foundation
 class TodoList {
   
   var todos: [ChecklistItem] = []
-  //let realm = try! Realm()
-  //lazy var categories: Results<ChecklistItem> = { self.realm.objects(ChecklistItem.self) }()
-  
+
   public init() {
     
     let row0Item = ChecklistItem()
@@ -34,13 +32,6 @@ class TodoList {
     todos.append(row3Item)
     todos.append(row4Item)
     
-    /*
-    for item in categories {
-      if item.checked == checked {
-        todos.append(item)
-      }
-    }
-    */
   }
   
   func newTodo() -> ChecklistItem {

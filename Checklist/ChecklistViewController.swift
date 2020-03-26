@@ -18,39 +18,7 @@ class ChecklistViewController: UITableViewController {
   
   @IBOutlet weak var urgentPic: UIImageView!
   
-  private func populateDefaultCategories() {
-    if categories.count == 0 { // 1
-      print("categories populated")
-      try! realm.write() { // 2
-        let defaultCategories =
-          ["Birds", "Mammals", "Flora", "Reptiles", "Arachnids" ] // 3
-        
-        for category in defaultCategories { // 4
-          let newCategory = ChecklistItem()
-          newCategory.text = category
-          newCategory.checked = false
-          
-          realm.add(newCategory)
-        }
-      }
-      
-      categories = realm.objects(ChecklistItem.self) // 5
-    } else {
-      print("nani")
-    }/*else {
-      try! realm.write() {
-        print("categories purged")
-        for item in categories {
-          realm.delete(item)
-        }
-      }
-    }*/
-  }
-  
-
-  
   @IBAction func completeButton(_ sender: UIButton) {
-    //navigationController?.popViewController(animated: true)
     let item = FinishedItem()
     guard let cell = sender.superview?.superview as? UITableViewCell,
       let indexPath = tableView.indexPath(for: cell) else {
@@ -65,17 +33,6 @@ class ChecklistViewController: UITableViewController {
     tableView.deleteRows(at: [indexPath], with: .automatic)
   }
   
-  @IBAction func addItem(_ sender: Any) {
-    
-    let newRowIndex = todoList.todos.count
-    _ = todoList.newTodo()
-    
-    let indexPath = IndexPath(row: newRowIndex, section: 0)
-    let indexPaths = [indexPath]
-    tableView.insertRows(at: indexPaths, with: .automatic)
-    
-  }
-  
   required init?(coder aDecoder: NSCoder) {
     todoList = TodoList()
     super.init(coder: aDecoder)
@@ -83,13 +40,6 @@ class ChecklistViewController: UITableViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-/* REALLY DOESNT LIKE THIS
-    for item in realm.objects(ChecklistItem.self) {
-      if (item.checked == false) {
-        todoList.todos.append(item)
-      }
-    }
-  */
     navigationController?.navigationBar.prefersLargeTitles = true
     
   }
@@ -105,43 +55,24 @@ class ChecklistViewController: UITableViewController {
     let cell = tableView.dequeueReusableCell(withIdentifier: "ChecklistItem", for: indexPath)
     try! realm.write() {
       let item = categories[indexPath.row]
-    
-      //let item = todoList.todos[indexPath.row]
       configureText(for: cell, with: item)
-      //urgentButton.isHidden = true
       configureCheckmark(for: cell, with: item)
-    }
-    if categories[indexPath.row].urgent {
-      //let imageView = UIImageView()
-      //imageView.frame = CGRect(x: cell.center.x-25, y: cell.center.y-30, width: 15, height: 15)
-      //imageView.backgroundColor = .cyan
-      //cell.addSubview(imageView)
     }
     return cell
   }
  
 
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    //if let cell = tableView.cellForRow(at: indexPath) {
-      //try! realm.write() {
-      //  let item = categories[indexPath.row]
-      //}
-      //configureCheckmark(for: cell, with: item)
       tableView.deselectRow(at: indexPath, animated: true)
-    
   }
   
   override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
     //todoList.todos.remove(at: indexPath.row)
     let indexPaths = [indexPath]
     try! realm.write() {
-      //categories[indexPath.row].checked = true
       realm.delete(categories[indexPath.row])
     }
     let subviews = tableView.cellForRow(at: indexPath)?.subviews
-    //for view in subviews! {
-    //  view.removeFromSuperview()
-    //}
     tableView.deleteRows(at: indexPaths, with: .automatic)
   }
     
