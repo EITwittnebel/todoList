@@ -91,6 +91,8 @@ class ChecklistViewController: UITableViewController {
       label.text = dateFormatter.string(from: item.dueDate)
       if (item.dueDate < Date()) {
         label.textColor = .red
+      } else {
+        label.textColor = .black
       }
     }
   }
